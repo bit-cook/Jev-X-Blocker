@@ -12,10 +12,13 @@ test('default configuration exposes three builtin rules applied to both kinds', 
   for (const rule of config.rules) assert.deepEqual(rule.applyTo, ['comment', 'post']);
   assert.equal(config.lazyScan, true);
   assert.equal(config.showMonitor, true);
+  assert.equal(config.showCheckControls, false);
   assert.equal(config.dailyLimit, 100000);
   assert.deepEqual(E.activeRules(config).length, 3);
   assert.deepEqual(E.activeRules(config, 'post').length, 3);
   assert.equal(E.normalizeConfig({ showMonitor: false }).showMonitor, false);
+  assert.equal(E.normalizeConfig({}).showCheckControls, false);
+  assert.equal(E.normalizeConfig({ showCheckControls: true }).showCheckControls, true);
 });
 
 test('default scopes enable detail replies and timeline only', () => {
