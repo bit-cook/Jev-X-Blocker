@@ -21,6 +21,7 @@ dist-test/
 test-browser/artifacts/
 
 # Local research (not for publication)
+_debug-*.mjs
 docs/
 
 # Research leftovers (downloaded by subagents)
