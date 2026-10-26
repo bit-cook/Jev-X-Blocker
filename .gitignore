@@ -15,6 +15,17 @@ dist/
 release/
 
 # Local browser-testing artifacts
-dist-test/
 .edge-profile/
+.edge-profile*/
+dist-test/
 test-browser/artifacts/
+
+# Local research (not for publication)
+docs/
+
+# Research leftovers (downloaded by subagents)
+baseten_docs.txt
+fofr*.html
+hf_*.tgz
+hf_*_pkg.json
+package/

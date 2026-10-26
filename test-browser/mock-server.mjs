@@ -9,6 +9,9 @@
 // [data-testid="User-Name"], a[href*="/status/"].
 import { createServer } from 'node:http';
 
+// MOCK_CORS=off disables Access-Control-* headers entirely, to test whether
+// an MV3 service worker with host_permissions still needs CORS.
+const CORS_ENABLED = process.env.MOCK_CORS !== 'off';
 const PORT = Number(process.env.MOCK_PORT || 8788);
 
 const HIDE_KEYWORDS = ['骚', '福利', '私密', '只进身体', '进群', '想约', '私聊', '加我', '完整版', 'DM for'];
@@ -48,6 +51,7 @@ setInterval(()=>{ if(document.getElementById('route').textContent!==location.pat
 </script></body></html>`;
 
 function cors(res) {
+  if (!CORS_ENABLED) return;
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'authorization, content-type');
@@ -78,5 +82,5 @@ const server = createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`mock x.com + TypeSafe listening on http://127.0.0.1:${PORT}`);
+  console.log(`mock x.com + TypeSafe listening on http://127.0.0.1:${PORT} (CORS ${CORS_ENABLED ? 'on' : 'OFF'})`);
 });

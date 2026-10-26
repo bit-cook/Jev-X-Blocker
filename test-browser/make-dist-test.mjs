@@ -18,6 +18,11 @@ const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 manifest.name = 'Jev X Blocker E2E';
 manifest.content_scripts[0].matches = ['https://x.com/*', 'http://127.0.0.1:8788/*'];
 for (const entry of manifest.web_accessible_resources) entry.matches = ['https://x.com/*', 'http://127.0.0.1:8788/*'];
+// WITH_HOST_PERMS=1 grants host permission for the no-CORS mock host (8789),
+// to test whether host_permissions alone exempts the SW from CORS.
+if (process.env.WITH_HOST_PERMS === '1') {
+  manifest.host_permissions = [...manifest.host_permissions, 'http://127.0.0.1:8789/*'];
+}
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
-console.log(`dist-test ready at ${dest} (matches: ${manifest.content_scripts[0].matches.join(', ')})`);
+console.log(`dist-test ready at ${dest} (host_permissions: ${JSON.stringify(manifest.host_permissions)})`);
