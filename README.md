@@ -32,7 +32,7 @@ X 的评论区是个粪坑，我们都在里面淘金。这个扩展的目标很
 
 > TypeSafe API 目前对部分地区不可用（返回 HTTP 451）。所在地区无法访问时，插件会保持放行，不影响正常浏览。
 
-当前最新版本：[v1.0.2](https://github.com/bit-cook/Jev-X-Blocker/releases/tag/v1.0.2)（[直接下载 ZIP](https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.0.2/Jev-X-Blocker-v1.0.2.zip)，约 69 KB）
+当前最新版本：[v1.0.3](https://github.com/bit-cook/Jev-X-Blocker/releases/tag/v1.0.3)（[直接下载 ZIP](https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.0.3/Jev-X-Blocker-v1.0.3.zip)，约 69 KB）
 
 ## 从源码构建
 

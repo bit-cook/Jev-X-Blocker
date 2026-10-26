@@ -1,6 +1,6 @@
 {
   "name": "jev-x-blocker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "license": "MIT",
   "description": "A local-first Chrome MV3 extension that hides high-confidence sexual, solicitation and spam content in both X posts and replies, powered by the user's own TypeSafe Jev API key.",
