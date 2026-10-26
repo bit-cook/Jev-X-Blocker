@@ -33,7 +33,7 @@ async function api(pathname, method = 'GET', body, headers = {}) {
   return json;
 }
 
-const files = ['index.html', 'shots/popup.png', 'shots/settings.png', 'shots/content.png'];
+const files = ['index.html', 'assets/icon128.png', 'shots/popup.png', 'shots/settings.png', 'shots/content.png'];
 for (const f of files) {
   if (!existsSync(join(SRC, f))) throw new Error(`missing site asset: ${f}`);
 }
