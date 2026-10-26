@@ -18,18 +18,21 @@ test('default configuration exposes three builtin rules applied to both kinds', 
   assert.equal(E.normalizeConfig({ showMonitor: false }).showMonitor, false);
 });
 
-test('default scopes enable posts everywhere except explore', () => {
+test('default scopes enable detail replies and timeline only', () => {
   const config = E.createDefaultConfig();
   assert.deepEqual(config.scopes, {
     detailReplies: true,
-    detailRoot: true,
+    detailRoot: false,
     timeline: true,
-    search: true,
-    profile: true,
+    search: false,
+    profile: false,
     explore: false
   });
+  assert.equal(E.scopeActive(config, 'detailReplies'), true);
   assert.equal(E.scopeActive(config, 'timeline'), true);
-  assert.equal(E.scopeActive({ scopes: { ...config.scopes, timeline: false } }, 'timeline'), false);
+  assert.equal(E.scopeActive(config, 'detailRoot'), false);
+  assert.equal(E.scopeActive(config, 'search'), false);
+  assert.equal(E.scopeActive({ scopes: { ...config.scopes, search: true } }, 'search'), true);
 });
 
 test('theme preference defaults to system and normalises unknown values', () => {

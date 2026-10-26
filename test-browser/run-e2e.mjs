@@ -120,7 +120,7 @@ async function main() {
   check('loaded extension is Jev X Blocker', /Jev X Blocker/.test(String(manifestName)), `${manifestName} ${manifestVersion}`);
 
   // Seed config: API key + mock endpoint. loadConfig normalizes the rest.
-  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${MOCK_API}', onboardingCompleted: true, enabled: true } })`);
+  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${MOCK_API}', onboardingCompleted: true, enabled: true, scopes: { detailReplies: true, detailRoot: true, timeline: true, search: true, profile: true, explore: false } } })`);
 
   const pageTarget = (await jsonList()).find((t) => t.type === 'page' && t.url.startsWith(MOCK));
   const page = await connect(pageTarget.webSocketDebuggerUrl);
@@ -171,7 +171,7 @@ async function main() {
   //    path, which bypasses the decision cache) keep everything visible.
   //    The plain check button intentionally serves the cached decision.
   await front();
-  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${DEAD_API}', onboardingCompleted: true, enabled: true } })`);
+  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${DEAD_API}', onboardingCompleted: true, enabled: true, scopes: { detailReplies: true, detailRoot: true, timeline: true, search: true, profile: true, explore: false } } })`);
   await sleep(3600); // content script config poll is 3s
   await evaluate(page, `[...document.querySelectorAll('.jxb-check-host button.jxb-check-recheck')].forEach((b) => b.click())`);
   await waitFor(async () => (await evaluate(page, `document.querySelectorAll('[data-jxb-placeholder]').length`)) === 0, { timeout: 15000, describe: 'fail-open unhide' });
@@ -182,7 +182,7 @@ async function main() {
   check('fail-open: monitor surfaces the error state', /失败/.test(failed.monitorStatus), failed.monitorStatus);
 
   // 6. Recovery: endpoint back online, forced rechecks re-hide fresh.
-  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${MOCK_API}', onboardingCompleted: true, enabled: true } })`);
+  await evaluate(sw, `chrome.storage.local.set({ jevXBlockerConfig: { typesafeApiKey: 'apikey_mock', apiEndpoint: '${MOCK_API}', onboardingCompleted: true, enabled: true, scopes: { detailReplies: true, detailRoot: true, timeline: true, search: true, profile: true, explore: false } } })`);
   await sleep(3600);
   await evaluate(page, `[...document.querySelectorAll('.jxb-check-host button.jxb-check-recheck')].forEach((b) => b.click())`);
   await waitFor(async () => (await evaluate(page, `document.querySelectorAll('[data-jxb-placeholder]').length`)) === 2, { timeout: 15000, describe: 'recovery re-hide' });

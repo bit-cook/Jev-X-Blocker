@@ -31,14 +31,28 @@
     hashMemo: new Map()
   };
 
+  // Hard ceiling for a message round-trip. The service worker's worst case
+  // is two 12s fetch attempts plus backoff (~24.5s); past that the channel
+  // is considered lost (classic MV3 sendMessage hang) and we resolve
+  // fail-open so hidden content can never stay stuck on "pending".
+  const SEND_TIMEOUT_MS = 26000;
+
   function send(type, payload) {
     return new Promise((resolve) => {
+      let settled = false;
+      const finish = (value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      };
+      const timer = setTimeout(() => finish({ ok: false, error: 'NO_RESPONSE' }), SEND_TIMEOUT_MS);
       try {
         root.chrome.runtime.sendMessage({ type, payload }, (response) => {
-          resolve(response || { ok: false, error: 'NO_RESPONSE' });
+          finish(response || { ok: false, error: 'NO_RESPONSE' });
         });
       } catch (_) {
-        resolve({ ok: false, error: 'RUNTIME_UNAVAILABLE' });
+        finish({ ok: false, error: 'RUNTIME_UNAVAILABLE' });
       }
     });
   }

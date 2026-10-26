@@ -53,10 +53,10 @@
 
   const DEFAULT_SCOPES = {
     detailReplies: true,
-    detailRoot: true,
+    detailRoot: false,
     timeline: true,
-    search: true,
-    profile: true,
+    search: false,
+    profile: false,
     explore: false
   };
 
