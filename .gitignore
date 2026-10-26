@@ -12,6 +12,7 @@ coverage/
 
 # Build output (rebuild with: node scripts/build.mjs)
 dist/
+release/
 
 # Local browser-testing artifacts
 dist-test/
