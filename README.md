@@ -6,7 +6,22 @@
 
 [隐私政策](privacy.html) · [MIT License](LICENSE)
 
-## 本地构建与安装
+## 下载安装（推荐）
+
+不想编译？直接下构建好的包，解压后加载即可：
+
+1. 打开 [Releases 发布页](https://github.com/bit-cook/Jev-X-Blocker/releases)，下载最新版本的 `Jev-X-Blocker-v*.zip`；
+2. 解压，得到一个 `Jev-X-Blocker` 文件夹（`manifest.json` 就在文件夹根部）；
+3. 浏览器地址栏输入 `chrome://extensions`（Edge 用 `edge://extensions`），打开右上角的**开发者模式**；
+4. 点**加载已解压的扩展程序**，选择刚才解压出的 `Jev-X-Blocker` 文件夹。
+
+首次安装会自动打开引导页，填入你自己的 TypeSafe API Key 即可。没有 Key 时插件保持放行，不会隐藏任何内容。
+
+> TypeSafe API 目前对部分地区不可用（返回 HTTP 451）。所在地区无法访问时，插件会保持放行，不影响正常浏览。
+
+当前最新版本：[v1.0.0](https://github.com/bit-cook/Jev-X-Blocker/releases/tag/v1.0.0)（[直接下载 ZIP](https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.0.0/Jev-X-Blocker-v1.0.0.zip)，约 69 KB）
+
+## 从源码构建
 
 环境要求：Node.js 20 或更高版本。
 
@@ -18,6 +33,8 @@ npm run benchmark -- --limit=6   # 可选：真实 API 小样本冒烟
 ```
 
 构建完成后打开 `chrome://extensions`，开启"开发者模式"，"加载已解压的扩展程序"，选择 `dist/` 目录。首次安装会自动打开 onboarding；如果本机装过 elons-job，API Key、自定义规则和累计统计会自动迁移过来。
+
+打包发布用：`node scripts/package-release.mjs` 生成 `release/Jev-X-Blocker-v<version>.zip`。
 
 ## 使用
 
