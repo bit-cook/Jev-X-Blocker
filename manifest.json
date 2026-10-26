@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jev X Blocker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "屏蔽 X 上的色情、性暗示与引流帖子和评论：高置信度才隐藏，可一键恢复。",
   "icons": {
     "16": "assets/icon16.png",
