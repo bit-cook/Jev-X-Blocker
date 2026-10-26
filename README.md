@@ -4,7 +4,7 @@
 
 本项目是 [elons-job](https://github.com/bugkiwi/elons-job) 的重构与强化版：原版只能处理帖子详情页的评论，Jev X Blocker 把同一套规则引擎扩展到了帖子本身（时间线、搜索、个人主页、详情页主帖），并做了大规模的性能与架构优化。
 
-[隐私政策](privacy.html) · [MIT License](LICENSE)
+[官网](https://osome.work/Jev-X-Blocker/) · [隐私政策](privacy.html) · [MIT License](LICENSE)
 
 ## 下载安装（推荐）
 
