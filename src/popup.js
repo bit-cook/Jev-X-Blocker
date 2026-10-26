@@ -18,8 +18,11 @@
   }
 
   function renderVersion() {
+    const version = 'v' + chrome.runtime.getManifest().version;
     const label = $('versionLabel');
-    if (label) label.textContent = 'v' + chrome.runtime.getManifest().version;
+    if (label) label.textContent = version;
+    const footer = $('footerVersion');
+    if (footer) footer.textContent = version + ' · TypeSafe Jev';
   }
 
   function renderThemeSeg() {

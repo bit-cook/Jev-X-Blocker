@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jev X Blocker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "屏蔽 X 上的色情、性暗示与引流帖子和评论：高置信度才隐藏，可一键恢复。",
   "icons": {
     "16": "assets/icon16.png",
@@ -9,7 +9,9 @@
     "48": "assets/icon48.png",
     "128": "assets/icon128.png"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://x.com/*",
     "https://api.typesafe.ai/*"
@@ -29,7 +31,9 @@
   "options_page": "src/settings.html",
   "content_scripts": [
     {
-      "matches": ["https://x.com/*"],
+      "matches": [
+        "https://x.com/*"
+      ],
       "js": [
         "src/shared/core.js",
         "src/content/adapter.js",
@@ -42,8 +46,12 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/styles/content.css"],
-      "matches": ["https://x.com/*"]
+      "resources": [
+        "src/styles/content.css"
+      ],
+      "matches": [
+        "https://x.com/*"
+      ]
     }
   ],
   "content_security_policy": {

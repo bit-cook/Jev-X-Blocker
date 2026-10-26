@@ -228,6 +228,7 @@ body.jxb-standalone .jxb-page-footer { width: min(720px, calc(100% - 32px)); mar
 .jxb-popup-key .jxb-input { min-width: 0; }
 .jxb-key-link { margin: 4px 0 10px; color: var(--jxb-blue-soft); text-decoration: none; }
 .jxb-key-link:hover { color: var(--jxb-text); text-decoration: none; }
+.jxb-popup-bottom-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .jxb-popup-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 13px; color: var(--jxb-muted); font-size: 10px; }
 .jxb-popup-status { padding: 12px; }
 .jxb-popup-status .jxb-card-header { align-items: center; gap: 8px; margin-bottom: 9px; }
