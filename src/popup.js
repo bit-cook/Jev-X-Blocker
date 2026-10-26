@@ -17,6 +17,11 @@
     document.documentElement.dataset.jxbTheme = resolved;
   }
 
+  function renderVersion() {
+    const label = $('versionLabel');
+    if (label) label.textContent = 'v' + chrome.runtime.getManifest().version;
+  }
+
   function renderThemeSeg() {
     const seg = $('themeSeg');
     if (!seg || !currentState) return;
@@ -96,6 +101,7 @@
     const apiStatus = $('apiStatus'); apiStatus.replaceChildren(); const dot = document.createElement('span'); dot.className = `jxb-dot ${state.hasApiKey ? '' : 'warn'}`; apiStatus.append(dot, document.createTextNode(state.hasApiKey ? ` TypeSafe 已连接${stats.latencyMs ? ` · ${stats.latencyMs}ms` : ''}` : ' 未连接 TypeSafe'));
     $('connectPanel').classList.toggle('jxb-hidden', state.hasApiKey);
     renderRules(config);
+    renderVersion();
     renderThemeSeg();
   }
 

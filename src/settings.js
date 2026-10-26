@@ -16,6 +16,14 @@
     document.documentElement.dataset.jxbTheme = resolved;
   }
 
+  function renderVersion() {
+    const version = 'v' + chrome.runtime.getManifest().version;
+    const badge = $('versionBadge');
+    if (badge) badge.textContent = version;
+    const footer = $('footerVersion');
+    if (footer) footer.textContent = 'Agent Core ' + version + ' · TypeSafe Jev';
+  }
+
   function renderThemeSeg() {
     const seg = $('themeSeg');
     if (!seg || !state) return;
@@ -96,6 +104,7 @@
     $('concurrencySelect').value = String(config.maxConcurrency); $('dailyLimitInput').value = String(config.dailyLimit); $('cacheTtlSelect').value = String(config.cacheTtlHours);
     $('requestPreview').textContent = JSON.stringify({ model: config.model, state: { content: '<post or comment text>' }, questions: E.buildQuestions(E.activeRules(config, 'post')) }, null, 2);
     renderRules();
+    renderVersion();
     renderThemeSeg();
   }
 

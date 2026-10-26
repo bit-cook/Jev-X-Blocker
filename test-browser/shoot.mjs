@@ -6,7 +6,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const DEBUG_PORT = 9223;
+const DEBUG_PORT = Number(process.env.CDP_PORT || 9223);
 const ART = resolve(ROOT, 'test-browser', 'artifacts');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

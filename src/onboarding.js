@@ -23,6 +23,8 @@
     document.documentElement.dataset.jxbTheme = resolved;
   }
   send(E.MESSAGE.GET_STATE).then((response) => { if (response && response.config) applyTheme(response.config.theme); });
+  const versionLabel = $('versionLabel');
+  if (versionLabel) versionLabel.textContent = 'Jev X Blocker v' + chrome.runtime.getManifest().version;
   function showStep(next) { step = next; document.querySelectorAll('[data-step]').forEach((node) => node.classList.toggle('active', Number(node.dataset.step) === step)); document.querySelectorAll('.jxb-stepper span').forEach((node, index) => node.classList.toggle('active', index <= step)); }
   function showError(message) { $('connectionStatus').textContent = message; $('connectionStatus').classList.remove('jxb-hidden'); }
   function renderRules() { $('onboardingRules').replaceChildren(...selectedRules.map((rule) => { const label = document.createElement('label'); label.className = 'jxb-check'; const input = document.createElement('input'); input.type = 'checkbox'; input.checked = true; input.dataset.ruleId = rule.id; const copy = document.createElement('span'); const title = document.createElement('strong'); title.textContent = rule.name; const desc = document.createElement('small'); desc.textContent = rule.description; copy.append(title, desc); label.append(input, copy); return label; })); }
