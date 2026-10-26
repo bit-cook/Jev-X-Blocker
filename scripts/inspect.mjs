@@ -109,7 +109,7 @@ check('源码树无密钥', scanHits.length === 0, scanHits.join(', '));
 
 console.log('== 7. 已提交内容密钥扫描（git index） ==');
 try {
-  const out = execFileSync('git', ['grep', '--cached', '-I', '-n', '-E', 'apikey_2111|ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}'], { cwd: ROOT, encoding: 'utf8' });
+  const out = execFileSync('git', ['grep', '--cached', '-I', '-n', '-E', 'apikey_2111|ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}', '--', ':!scripts/inspect.mjs'], { cwd: ROOT, encoding: 'utf8' });
   check('git 暂存区无密钥', false, out.slice(0, 200));
 } catch (e) {
   check('git 暂存区无密钥', e.status === 1, e.message.slice(0, 100));
