@@ -6,24 +6,6 @@
 
 [隐私政策](privacy.html) · [MIT License](LICENSE)
 
-## 与 elons-job 的区别
-
-| 能力 | elons-job | Jev X Blocker |
-|---|---|---|
-| 详情页评论过滤 | ✅ | ✅ |
-| 详情页主帖（root tweet）过滤 | ❌ | ✅ |
-| 首页时间线 / 书签 / 列表帖子过滤 | ❌ | ✅ |
-| 搜索结果帖子过滤 | ❌ | ✅ |
-| 个人主页时间线过滤 | ❌ | ✅ |
-| 探索页过滤 | ❌ | ✅（默认关闭） |
-| 按规则限定"仅评论 / 仅帖子" | ❌ | ✅（applyTo） |
-| 时间线视口懒检查（省 API） | ❌ | ✅（IntersectionObserver） |
-| service worker 内存 LRU 缓存 | ❌ | ✅ |
-| 批量统计写入（减少 storage 抖动） | ❌ | ✅ |
-| 从 elons-job 无缝迁移（Key/规则/累计数） | — | ✅ |
-| 外观主题（深色 / 浅色 / 跟随系统，同步作用于扩展页与 X 内浮窗） | ❌ | ✅ |
-| 内容脚本模块化（adapter/pipeline/overlay/main） | ❌ | ✅ |
-
 ## 本地构建与安装
 
 环境要求：Node.js 20 或更高版本。
