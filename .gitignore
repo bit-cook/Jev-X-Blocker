@@ -1,0 +1,19 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies & coverage
+node_modules/
+coverage/
+
+# OS noise
+.DS_Store
+
+# Build output (rebuild with: node scripts/build.mjs)
+dist/
+
+# Local browser-testing artifacts
+dist-test/
+.edge-profile/
+test-browser/artifacts/

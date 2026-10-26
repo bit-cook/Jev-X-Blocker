@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jev X Blocker 隐私政策</title>
+<style>body{max-width:760px;margin:40px auto;padding:0 20px;font:14px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#1f2733}h1{font-size:22px}code{background:#f1f5f9;padding:2px 5px;border-radius:4px;font-size:12px}li{margin:4px 0}</style>
+</head>
+<body>
+<h1>Jev X Blocker 隐私政策</h1>
+<p>Jev X Blocker 是一个本地优先的 Chrome 扩展，用于在 X（x.com）上隐藏高置信度的色情、性暗示与色情引流帖子和评论。本页面说明扩展处理哪些数据、如何处理，以及你拥有的控制权。</p>
+
+<h2>发送了什么</h2>
+<p>当一条帖子或评论进入检查流程时，扩展会把<strong>用户名和帖子与评论正文</strong>合并后的文本发送到你自行配置的 TypeSafe Jev API（<code>https://api.typesafe.ai/v1/systemone</code>），用于语义概率判断。除此之外没有其他内容离开你的浏览器。</p>
+
+<h2>不会发送什么</h2>
+<ul>
+  <li>X Cookie、登录信息或会话 Token</li>
+  <li>浏览历史与标签页信息</li>
+  <li>图片、视频、头像</li>
+  <li>你的 TypeSafe API Key 不会进入 X 页面 DOM、URL 或日志，也不会发送给插件开发者</li>
+  <li>任何数据都不会发送给插件开发者的服务器——本扩展没有后端</li>
+</ul>
+
+<h2>本地存储</h2>
+<ul>
+  <li>TypeSafe API Key 保存在 <code>chrome.storage.local</code>，只有扩展的 service worker 读取</li>
+  <li>过滤配置（规则、阈值、范围）保存在本地</li>
+  <li>分类缓存只保存"用户名+正文"的哈希 key 与概率结果，不保存原文；可在设置中一键清除</li>
+  <li>统计只记录请求数、隐藏数等计数，不含任何文本内容</li>
+</ul>
+
+<h2>你的控制权</h2>
+<ul>
+  <li>随时可以在设置中心更换或删除 API Key</li>
+  <li>每条被隐藏的内容都可以点击"查看"恢复</li>
+  <li>可以按范围（评论 / 主帖 / 时间线 / 搜索 / 主页 / 探索）开关过滤</li>
+  <li>可以修改、停用或删除任何过滤规则</li>
+</ul>
+
+<h2>API 供应商</h2>
+<p>文本判断由 TypeSafe Jev API 完成，该请求受 TypeSafe 自身的服务条款与隐私政策约束。请参考 TypeSafe 官网的相关文档。</p>
+
+<h2>联系与反馈</h2>
+<p>本项目基于 MIT 协议开源，欢迎通过 GitHub Issues 反馈问题。</p>
+</body>
+</html>

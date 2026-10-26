@@ -1,0 +1,19 @@
+{
+  "name": "jev-x-blocker",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "A local-first Chrome MV3 extension that hides high-confidence sexual, solicitation and spam content in both X posts and replies, powered by the user's own TypeSafe Jev API key.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "check": "node --check src/shared/core.js && node --check src/content/adapter.js && node --check src/content/pipeline.js && node --check src/content/overlay.js && node --check src/content/main.js && node --check src/background.js && node --check src/popup.js && node --check src/settings.js && node --check src/onboarding.js && node --check scripts/build.mjs && node --check scripts/benchmark.mjs",
+    "build": "node scripts/build.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

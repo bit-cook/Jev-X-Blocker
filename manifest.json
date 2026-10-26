@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Jev X Blocker",
+  "version": "1.0.0",
+  "description": "屏蔽 X 上的色情、性暗示与引流帖子和评论：高置信度才隐藏，可一键恢复。",
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://api.typesafe.ai/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_title": "Jev X Blocker",
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png"
+    }
+  },
+  "options_page": "src/settings.html",
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*"],
+      "js": [
+        "src/shared/core.js",
+        "src/content/adapter.js",
+        "src/content/pipeline.js",
+        "src/content/overlay.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/styles/content.css"],
+      "matches": ["https://x.com/*"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
+}

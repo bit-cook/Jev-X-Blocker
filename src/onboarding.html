@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jev X Blocker · 开始使用</title><link rel="stylesheet" href="styles/app.css"></head>
+<body>
+  <main class="jxb-onboarding jxb-shell"><div class="jxb-onboarding-card">
+    <header class="jxb-onboarding-header"><div class="jxb-brand"><span class="jxb-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.8 4.8 5.6v5.7c0 4.5 3 8.1 7.2 9.7 4.2-1.6 7.2-5.2 7.2-9.7V5.6L12 2.8Z" fill="url(#jxbMarkGradB)"/><rect x="7" y="10.6" width="10" height="2.6" rx="1.3" fill="#F8FAFF"/><defs><linearGradient id="jxbMarkGradB" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#38D4F5"/><stop offset=".5" stop-color="#1D9BF0"/><stop offset="1" stop-color="#5B5BD6"/></linearGradient></defs></svg></span><span><span class="jxb-brand-title">Jev X Blocker <span class="jxb-badge">MV3</span></span><span class="jxb-brand-sub">X 帖子 + 评论区 · Precision Purge</span></span></div><h1>把噪声留在视线之外。</h1><p>过滤 X 的帖子和评论区，高置信度才隐藏；API 异常时自动放行。</p></header>
+    <div class="jxb-stepper"><span class="active"></span><span></span><span></span></div>
+    <section class="jxb-card">
+      <form id="onboardingForm">
+        <div class="jxb-step active" data-step="0"><span class="jxb-kicker">STEP 01 / CONNECT</span><h2 class="jxb-section-title" style="margin-top:8px">需要 TypeSafe API Key</h2><p class="jxb-muted">API Key 仅存储在 Chrome 本地，并由 service worker 直接请求 TypeSafe。它不会进入 X 页面 DOM。</p><a class="jxb-button ghost jxb-key-link" href="https://typesafe.ai/" target="_blank" rel="noopener noreferrer">前往 TypeSafe 官网获取 API Key ↗</a><div class="jxb-field" style="margin-top:18px"><label class="jxb-label" for="onboardingKey">TypeSafe API Key</label><input id="onboardingKey" class="jxb-input jxb-mono" type="password" autocomplete="off" placeholder="apikey_…" required><p id="connectionStatus" class="jxb-form-error jxb-hidden"></p></div><div class="jxb-onboarding-actions"><button id="testConnectionButton" type="button" class="jxb-button ghost">测试连接</button><button id="nextButton" type="button" class="jxb-button primary">继续</button></div></div>
+        <div class="jxb-step" data-step="1"><span class="jxb-kicker">STEP 02 / RULES & SCOPES</span><h2 class="jxb-section-title" style="margin-top:8px">确认过滤规则与范围</h2><p class="jxb-muted">默认使用平衡阈值。你可以稍后在设置中心调整或新增自然语言规则。</p><div id="onboardingRules" class="jxb-check-list" style="margin-top:16px"></div><h3 class="jxb-section-title" style="margin-top:20px">过滤范围</h3><div id="onboardingScopes" class="jxb-check-list" style="margin-top:10px"></div><div class="jxb-onboarding-actions"><button id="backButton" type="button" class="jxb-button ghost">返回</button><button id="finishButton" type="button" class="jxb-button primary">完成设置</button></div></div>
+        <div class="jxb-step" data-step="2"><span class="jxb-kicker">READY / FAIL OPEN</span><h2 class="jxb-section-title" style="margin-top:8px">防护已就绪</h2><p class="jxb-muted">打开 X 的时间线或帖子详情页即可开始扫描。私信与通知页不会被处理。</p><div class="jxb-card jxb-callout" style="margin-top:16px;padding:14px;"><div class="jxb-chip green">SHIELD ON</div><p style="margin:10px 0 0">任何 API 错误、超时或达到每日配额时，内容都会保持显示。</p></div><div class="jxb-onboarding-actions"><button id="openSettingsButton" type="button" class="jxb-button ghost">打开设置</button><button id="doneButton" type="button" class="jxb-button primary">开始使用</button></div></div>
+      </form>
+    </section>
+    <footer class="jxb-footer"><span>本地优先 · 不收集浏览历史</span><span class="jxb-mono">Jev X Blocker v1.0.0</span></footer>
+  </div></main>
+  <div id="toast" class="jxb-toast jxb-hidden" role="status"></div>
+  <script src="shared/core.js"></script><script src="onboarding.js"></script>
+</body>
+</html>
