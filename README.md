@@ -2,6 +2,8 @@
 
 > **More Signal, Less Noise, Better Living.**
 
+[English](README.en.md) | 中文
+
 一个本地优先的 Chrome Manifest V3 扩展：基于 [TypeSafe Jev](https://typesafe.ai/) 判断模型，对 X (`x.com`) 上的垃圾信息与噪声骚扰做语义级过滤——**用判断模型分析，而不是关键词匹配**，更准确、更智能；过滤规则可以用大白话定义；速度快到几乎无感。帖子和评论区同时覆盖，命中内容显示可恢复的隐藏占位符。
 
 ## 为什么做这个
@@ -32,7 +34,7 @@ X 的评论区是个粪坑，我们都在里面淘金。这个扩展的目标很
 
 > TypeSafe API 目前对部分地区不可用（返回 HTTP 451）。所在地区无法访问时，插件会保持放行，不影响正常浏览。
 
-当前最新版本：[v1.0.3](https://github.com/bit-cook/Jev-X-Blocker/releases/tag/v1.0.3)（[直接下载 ZIP](https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.0.3/Jev-X-Blocker-v1.0.3.zip)，约 76 KB）
+当前最新版本：[v1.1.0](https://github.com/bit-cook/Jev-X-Blocker/releases/tag/v1.1.0)（[直接下载 ZIP](https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.1.0/Jev-X-Blocker-v1.1.0.zip)，约 76 KB）
 
 ## 从源码构建
 

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jev X Blocker — Privacy Policy</title>
+<style>body{max-width:760px;margin:40px auto;padding:0 20px;font:14px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#1f2733}h1{font-size:22px}h2{font-size:17px;margin-top:28px}code{background:#f1f5f9;padding:2px 5px;border-radius:4px;font-size:12px}li{margin:4px 0}.lang{font-size:12px;margin-bottom:24px}.lang a{color:#1d9bf0}</style>
+</head>
+<body>
+<div class="lang"><a href="privacy.html">中文</a> | English</div>
+<h1>Jev X Blocker Privacy Policy</h1>
+<p>Jev X Blocker is a local-first Chrome extension that hides high-confidence porn, sexual innuendo and solicitation posts and replies on X (x.com). This page explains what data the extension handles, how, and the controls you have.</p>
+
+<h2>What is sent</h2>
+<p>When a post or reply enters the check flow, the extension sends the <strong>merged author name and post/reply text</strong> to the TypeSafe Jev API (<code>https://api.typesafe.ai/v1/systemone</code>) that you configure yourself, for a semantic probability judgment. Nothing else leaves your browser.</p>
+
+<h2>What is never sent</h2>
+<ul>
+  <li>X cookies, login state or session tokens</li>
+  <li>Browsing history and tab information</li>
+  <li>Images, videos or avatars</li>
+  <li>Your TypeSafe API key never enters the X page DOM, URLs or logs, and is never sent to the extension developer</li>
+  <li>No data ever reaches the extension developer's servers — this extension has no backend</li>
+</ul>
+
+<h2>Local storage</h2>
+<ul>
+  <li>The TypeSafe API key is stored in <code>chrome.storage.local</code> and read only by the extension's service worker</li>
+  <li>Filter settings (rules, thresholds, scopes) are stored locally</li>
+  <li>The classification cache stores only a hash of "author + text" with the probability result — never raw text; clear it anytime in Settings</li>
+  <li>Statistics are counters only (requests, hidden) with no text content</li>
+</ul>
+
+<h2>Your controls</h2>
+<ul>
+  <li>Replace or delete the API key anytime in Settings</li>
+  <li>Every hidden item can be restored with one click ("View post / View reply")</li>
+  <li>Filter scopes (replies / root post / timeline / search / profile / explore) are individually toggleable</li>
+  <li>Every rule can be edited, disabled or deleted</li>
+</ul>
+
+<h2>API provider</h2>
+<p>Text judgment is performed by the TypeSafe Jev API, which is subject to TypeSafe's own terms and privacy policy — see the TypeSafe website for details.</p>
+
+<h2>Contact & feedback</h2>
+<p>The project is open source under the MIT license. Feedback is welcome through GitHub Issues.</p>
+</body>
+</html>
