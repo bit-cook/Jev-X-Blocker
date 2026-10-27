@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN" data-jxb-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" sizes="128x128" href="assets/icon128.png">
+<title>Jev X Blocker — More Signal, Less Noise, Better Living.</title>
+<meta name="description" content="data-i18n-key="f.local.t" data-i18n-zh="本地优先" data-i18n-en="Local-first"的 Chrome Manifest V3 扩展：基于 TypeSafe Jev 判断模型过滤 X 上的垃圾信息与噪声骚扰——不是关键词匹配，规则用大白话定义，可一键恢复。">
+<style>
+:root, html[data-jxb-theme='dark'] {
+  color-scheme: dark;
+  --bg:#05080f; --surface:#0f1522; --surface-2:#121a2b; --surface-3:#1a2437;
+  --line:rgba(148,163,184,.13); --line-strong:rgba(148,163,184,.28);
+  --text:#eef2f9; --muted:#8fa0b8; --dim:#5d6d85;
+  --blue:#1d9bf0; --blue-soft:#9ecbff; --green:#2ee6a8; --amber:#fbbf24;
+  --grad:linear-gradient(135deg,#38d4f5,#1d9bf0 48%,#5b5bd6);
+  --aurora-1:rgba(56,212,245,.09); --aurora-2:rgba(79,70,229,.11);
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+}
+html[data-jxb-theme='light'] {
+  color-scheme: light;
+  --bg:#eef2f8; --surface:#ffffff; --surface-2:#f3f6fb; --surface-3:#e8eef7;
+  --line:rgba(15,23,42,.1); --line-strong:rgba(15,23,42,.22);
+  --text:#182742; --muted:#57698a; --dim:#7c8ba6;
+  --blue-soft:#1668b8; --green:#0d9e78;
+  --aurora-1:rgba(56,212,245,.16); --aurora-2:rgba(99,102,241,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{font-size:14px;line-height:1.75;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background:radial-gradient(52rem 30rem at 88% -6%,var(--aurora-1),transparent 62%),
+  radial-gradient(44rem 28rem at -10% 104%,var(--aurora-2),transparent 60%),var(--bg)}
+a{color:var(--blue-soft);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:10;backdrop-filter:blur(18px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(16px,3vw,32px)}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(56,212,245,.3);border-radius:9px;background:linear-gradient(160deg,rgba(56,212,245,.12),rgba(79,70,229,.14))}
+.brand b{font-size:16px;letter-spacing:-.02em}
+.brand small{display:block;color:var(--muted);font-size:11px}
+nav.top{display:flex;gap:6px;align-items:center}
+nav.top a{padding:7px 12px;border-radius:999px;color:var(--muted);font-size:13px}
+nav.top a:hover{color:var(--text);background:rgba(148,163,184,.08);text-decoration:none}
+nav.top a.cta{color:#04121f;background:var(--grad);font-weight:700}
+.theme-toggle{border:1px solid var(--line-strong);background:var(--surface-2);color:var(--muted);border-radius:999px;padding:6px 14px;font:600 12px var(--sans);cursor:pointer}
+.theme-toggle:hover{color:var(--text);border-color:var(--blue)}
+.hero{text-align:center;padding:70px 0 40px}
+.kicker{color:var(--dim);font:600 11px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.hero h1{margin:14px 0 10px;font-size:clamp(30px,6vw,52px);line-height:1.08;letter-spacing:-.04em;background:linear-gradient(120deg,#f4f8ff 30%,#9ecbff 78%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-jxb-theme='light'] .hero h1{background:linear-gradient(120deg,#182742 30%,#2b5f9e 78%,#1d9bf0);-webkit-background-clip:text;background-clip:text}
+.hero .tagline{margin:14px 0 0;font:700 clamp(17px,3vw,24px)/1.3 var(--sans);letter-spacing:.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{max-width:640px;margin:12px auto 0;color:var(--muted);font-size:15px}
+.cta-row{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+.btn{min-height:40px;display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:9px;font-weight:700;border:1px solid transparent;transition:transform .16s ease,filter .16s ease}
+.btn.primary{background:var(--grad);color:#04121f;box-shadow:0 6px 18px rgba(29,155,240,.28)}
+.btn.primary:hover{filter:brightness(1.1);transform:translateY(-1px);text-decoration:none}
+.btn.ghost{color:var(--muted);border-color:var(--line-strong)}
+.btn.ghost:hover{color:var(--text);text-decoration:none}
+.chips{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.chip{padding:4px 11px;border-radius:999px;font:600 11px var(--mono);color:var(--green);background:rgba(46,230,168,.09);border:1px solid rgba(46,230,168,.24)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:36px 0 10px}
+.shot{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--surface);box-shadow:0 14px 34px rgba(0,0,0,.25)}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{padding:10px 14px;color:var(--muted);font-size:12px}
+h2{font-size:24px;letter-spacing:-.02em;margin:56px 0 18px;text-align:center}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.fcard{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 42%),var(--surface);border:1px solid var(--line);border-radius:13px;padding:20px}
+.fcard .ic{width:38px;height:38px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(135deg,rgba(56,212,245,.13),rgba(79,70,229,.16));border:1px solid rgba(56,212,245,.22);font-size:18px;margin-bottom:12px}
+.fcard h3{margin:0 0 6px;font-size:15px}
+.fcard p{margin:0;color:var(--muted);font-size:13px}
+.steps{counter-reset:step;display:grid;gap:10px;max-width:760px;margin:0 auto}
+.step{display:flex;gap:14px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:15px 18px}
+.step::before{counter-increment:step;content:counter(step);flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:var(--grad);color:#04121f;font:700 14px var(--mono)}
+.step b{display:block;font-size:14px}
+.step p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.notice{max-width:860px;margin:22px auto 0;border-left:3px solid var(--amber);border-radius:10px;padding:13px 16px;background:rgba(251,191,36,.06);color:var(--muted);font-size:13px}
+.notice strong{color:var(--amber)}
+.priv{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;max-width:900px;margin:0 auto}
+.priv div{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:14px 16px;font-size:13px;color:var(--muted)}
+.priv b{display:block;color:var(--green);margin-bottom:4px;font-size:13px}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:24px 0 40px;color:var(--dim);font:500 12px var(--mono);text-align:center}
+footer a{color:var(--muted)}
+@media print{header,.cta-row{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <span class="brand">
+      <span class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.8 4.8 5.6v5.7c0 4.5 3 8.1 7.2 9.7 4.2-1.6 7.2-5.2 7.2-9.7V5.6L12 2.8Z" fill="url(#g)"/><rect x="7" y="10.6" width="10" height="2.6" rx="1.3" fill="#F8FAFF"/><defs><linearGradient id="g" x1="12" y1="2.8" x2="12" y2="21.2" gradientUnits="userSpaceOnUse"><stop stop-color="#50DEFC"/><stop offset=".55" stop-color="#4084FA"/><stop offset="1" stop-color="#683EE4"/></linearGradient></defs></svg></span>
+      <span><b>Jev X Blocker</b><small>X 帖子 + 评论区 · Precision Purge</small></span>
+    </span>
+    <nav class="top">
+      data-i18n-key="" data-i18n-zh="<a href=&quot;#install&quot; data-i18n-key=&quot;nav.install&quot;>data-i18n-key="h2.install" data-i18n-zh="安装" data-i18n-en="Install"</a>" data-i18n-en=""
+      data-i18n-key="" data-i18n-zh="<a href=&quot;#features&quot; data-i18n-key=&quot;nav.features&quot;>data-i18n-key="h2.features" data-i18n-zh="功能" data-i18n-en="Features"</a>" data-i18n-en=""
+      data-i18n-key="" data-i18n-zh="<a href=&quot;#privacy&quot; data-i18n-key=&quot;nav.privacy&quot;>隐私</a>" data-i18n-en=""
+      <a class="cta" href="https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.1.0/Jev-X-Blocker-v1.1.0.zip">data-i18n-key="nav.download" data-i18n-zh="下载 v1.1.0" data-i18n-en="Download v1.1.0"</a>
+    </nav>
+    <button class="theme-toggle" id="langToggle" type="button">EN</button>
+  <button class="theme-toggle" id="themeToggle" type="button">切换浅色</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">data-i18n-key="LOCAL-FIRST · CHROME MANIFEST V3 · TYPESAFE JEV|kicker" data-i18n-zh="LOCAL-FIRST · CHROME MANIFEST V3 · TYPESAFE JEV" data-i18n-en="kicke"</div>
+    <h1>data-i18n-key="hero.h1" data-i18n-zh="把噪声留在视线之外。" data-i18n-en="Keep the noise out of sight."</h1>
+    <p class="tagline">More Signal, Less Noise, Better Living.</p>
+    <p class="sub">data-i18n-key="Semantic filtering of garbage and noise harassment on X with judgment models — <strong style="color:var(--text)">not keyword matching</strong>. More accurate, more intelligent; rules in plain language; fast to the point of invisible. Porn, solicitation and flooding are just the first built-in rules — any garbage you want gone is one sentence away, and every hit is one click from restore.|hero.sub" data-i18n-zh="Semantic filtering of garbage and noise harassment on X with judgment models — <strong style=&quot;color:var(--text)&quot;>not keyword matching</strong>. More accurate, more intelligent; rules in plain language; fast to the point of invisible. Porn, solicitation and flooding are just the first built-in rules — any garbage you want gone is one sentence away, and every hit is one click from restore." data-i18n-en="hero.su"</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.1.0/Jev-X-Blocker-v1.1.0.zip">data-i18n-key="hero.download" data-i18n-zh="⬇ 下载 Jev-X-Blocker-v1.1.0.zip" data-i18n-en="⬇ Download v1.1.0"</a>
+      <a class="btn ghost" href="https://github.com/bit-cook/Jev-X-Blocker">data-i18n-key="hero.repo" data-i18n-zh="GitHub 仓库 →" data-i18n-en="GitHub repository →"</a>
+    </div>
+    <div class="chips">
+      <span class="chip">data-i18n-key="chip.unzip" data-i18n-zh="76 KB · 解压即用" data-i18n-en="76 KB · unzip and load"</span>
+      <span class="chip">data-i18n-key="chip.perms" data-i18n-zh="仅 storage 权限" data-i18n-en="storage permission only"</span>
+      <span class="chip">data-i18n-key="chip.failopen" data-i18n-zh="data-i18n-key="f.failopen.t" data-i18n-zh="Fail-Open 容错" data-i18n-en="Fail-open safety"" data-i18n-en="Fail-open safety"</span>
+      <span class="chip">data-i18n-key="chip.mit" data-i18n-zh="MIT License" data-i18n-en="MIT License"</span>
+    </div>
+  </section>
+
+  <div class="shots">
+    <figure class="shot"><img src="shots/console.png" alt="扩展控制台" loading="lazy"><figcaption>data-i18n-key="shot.console" data-i18n-zh="扩展控制台：状态、过滤范围、规则与主题一目了然" data-i18n-en="Console: status, scopes, rules and theme at a glance"</figcaption></figure>
+    <figure class="shot"><img src="shots/content.png" alt="X 页面过滤效果" loading="lazy"><figcaption>data-i18n-key="shot.timeline" data-i18n-zh="X 时间线：违规帖被隐藏为占位符，可一键恢复" data-i18n-en="X timeline: offending posts collapsed into restorable placeholders"</figcaption></figure>
+    <figure class="shot"><img src="shots/settings.png" alt="设置中心" loading="lazy"><figcaption>data-i18n-key="shot.settings" data-i18n-zh="设置中心：范围编排、规则阈值、成本防护" data-i18n-en="Settings: scope orchestration, rule thresholds, cost guards"</figcaption></figure>
+  </div>
+
+  <h2 id="features">data-i18n-key="h2.features" data-i18n-zh="功能" data-i18n-en="Features"</h2>
+  <div class="features">
+    <div class="fcard"><div class="ic">🛡️</div><h3>data-i18n-key="f.dual.t" data-i18n-zh="帖子 + 评论双通道" data-i18n-en="Posts + replies, dual channel"</h3><p>data-i18n-key="Detail replies, the detail root post, the home timeline (incl. bookmarks/lists), search results, profiles and explore — six independently toggleable scopes. Defaults: detail replies + home timeline; everything else is one toggle away.|f.dual.d" data-i18n-zh="Detail replies, the detail root post, the home timeline (incl. bookmarks/lists), search results, profiles and explore — six independently toggleable scopes. Defaults: detail replies + home timeline; everything else is one toggle away." data-i18n-en="f.dual."</p></div>
+    <div class="fcard"><div class="ic">👁️</div><h3>data-i18n-key="f.lazy.t" data-i18n-zh="视口懒检查" data-i18n-en="Viewport lazy check"</h3><p>data-i18n-key="Timeline posts are classified only as they approach the viewport — quickly scrolled posts cost zero API calls; repeats hit the local LRU cache (24h default).|f.lazy.d" data-i18n-zh="Timeline posts are classified only as they approach the viewport — quickly scrolled posts cost zero API calls; repeats hit the local LRU cache (24h default)." data-i18n-en="f.lazy."</p></div>
+    <div class="fcard"><div class="ic">💧</div><h3>data-i18n-key="chip.failopen" data-i18n-zh="data-i18n-key="f.failopen.t" data-i18n-zh="Fail-Open 容错" data-i18n-en="Fail-open safety"" data-i18n-en="Fail-open safety"</h3><p>data-i18n-key="On API failure, timeout or exhausted quota everything stays visible — nothing is hidden on uncertainty.|f.failopen.d" data-i18n-zh="On API failure, timeout or exhausted quota everything stays visible — nothing is hidden on uncertainty." data-i18n-en="f.failopen."达到每日上限自动停止过滤。</p></div>
+    <div class="fcard"><div class="ic">🔒</div><h3>data-i18n-key="f.local.t" data-i18n-zh="本地优先" data-i18n-en="Local-first"</h3><p>API Key 只存浏览器本地、仅由 service worker 读取；评论文本直接发送 TypeSafe，不经过任何第三方服务器；不申请 tabs / history / cookies / webRequest 权限。</p></div>
+    <div class="fcard"><div class="ic">🎛️</div><h3>data-i18n-key="f.rules.t" data-i18n-zh="规则完全可定制" data-i18n-en="Fully customizable rules"</h3><p>data-i18n-key="The built-in porn/innuendo, solicitation and template-flooding rules are just the first batch; thresholds are adjustable (0.5–0.99), custom natural-language rules are supported, and each rule can target replies only or posts only — any garbage you want gone is one sentence per rule.|f.rules.d" data-i18n-zh="The built-in porn/innuendo, solicitation and template-flooding rules are just the first batch; thresholds are adjustable (0.5–0.99), custom natural-language rules are supported, and each rule can target replies only or posts only — any garbage you want gone is one sentence per rule." data-i18n-en="f.rules."</p></div>
+    <div class="fcard"><div class="ic">🌗</div><h3>data-i18n-key="f.theme.t" data-i18n-zh="深色 / 浅色 / 跟随系统" data-i18n-en="Dark / light / follow system"</h3><p>data-i18n-key="The theme setting applies to extension pages and the placeholders, check popovers and panel inside X; the version is always visible.|f.theme.d" data-i18n-zh="The theme setting applies to extension pages and the placeholders, check popovers and panel inside X; the version is always visible." data-i18n-en="f.theme."</p></div>
+  </div>
+
+  <h2 id="install">data-i18n-key="h2.install" data-i18n-zh="安装" data-i18n-en="Install"</h2>
+  <div class="steps">
+    <div class="step"><div><b>data-i18n-key="s1.t" data-i18n-zh="下载并解压" data-i18n-en="Download & unzip"</b><p>data-i18n-key="Download <a href="https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.1.0/Jev-X-Blocker-v1.1.0.zip">Jev-X-Blocker-v1.1.0.zip</a> (~76 KB) and unzip it into a <code>Jev-X-Blocker</code> folder.|s1.d" data-i18n-zh="Download <a href=&quot;https://github.com/bit-cook/Jev-X-Blocker/releases/download/v1.1.0/Jev-X-Blocker-v1.1.0.zip&quot;>Jev-X-Blocker-v1.1.0.zip</a> (~76 KB) and unzip it into a <code>Jev-X-Blocker</code> folder." data-i18n-en="s1."</p></div></div>
+    <div class="step"><div><b>data-i18n-key="s2.t" data-i18n-zh="打开扩展管理页" data-i18n-en="Open the extensions page"</b><p>data-i18n-key="Enter <code>chrome://extensions</code> in Chrome (or <code>edge://extensions</code> in Edge) and turn on Developer mode.|s2.d" data-i18n-zh="Enter <code>chrome://extensions</code> in Chrome (or <code>edge://extensions</code> in Edge) and turn on Developer mode." data-i18n-en="s2."</p></div></div>
+    <div class="step"><div><b>data-i18n-key="s3.t" data-i18n-zh="加载扩展" data-i18n-en="Load the extension"</b><p>data-i18n-key="Click "Load unpacked" and select the unzipped <code>Jev-X-Blocker</code> folder (manifest.json sits at the root).|s3.d" data-i18n-zh="Click &quot;Load unpacked&quot; and select the unzipped <code>Jev-X-Blocker</code> folder (manifest.json sits at the root)." data-i18n-en="s3."</p></div></div>
+    <div class="step"><div><b>data-i18n-key="s4.t" data-i18n-zh="连接 TypeSafe" data-i18n-en="Connect TypeSafe"</b><p>首次data-i18n-key="h2.install" data-i18n-zh="安装" data-i18n-en="Install"自动打开引导页，填入你的 TypeSafe API Key 并测试连接。没有 Key 时插件保持放行，不会隐藏任何内容。</p></div></div>
+  </div>
+  <div class="notice"><strong>data-i18n-key="notice.t" data-i18n-zh="地区提示：" data-i18n-en="Regional notice:"</strong>data-i18n-key="The TypeSafe API is unavailable in some regions (HTTP 451). Where it is blocked, the extension keeps everything visible and browsing is unaffected.|notice.d" data-i18n-zh="The TypeSafe API is unavailable in some regions (HTTP 451). Where it is blocked, the extension keeps everything visible and browsing is unaffected." data-i18n-en="notice."</div>
+
+  <h2 id="privacy">data-i18n-key="h2.privacy" data-i18n-zh="隐私边界" data-i18n-en="Privacy boundary"</h2>
+  <div class="priv">
+    <div><b>data-i18n-key="p.send.t" data-i18n-zh="✓ 只发送文本" data-i18n-en="✓ Only text is sent"</b>data-i18n-key="The matched author name + post/reply body, sent straight to the TypeSafe API you configure.|p.send.d" data-i18n-zh="The matched author name + post/reply body, sent straight to the TypeSafe API you configure." data-i18n-en="p.send."</div>
+    <div><b>data-i18n-key="p.noread.t" data-i18n-zh="✕ 不读取" data-i18n-en="✕ Never reads"</b>data-i18n-key="X cookies, login state, browsing history, images, videos or avatars.|p.noread.d" data-i18n-zh="X cookies, login state, browsing history, images, videos or avatars." data-i18n-en="p.noread."</div>
+    <div><b>data-i18n-key="p.nothird.t" data-i18n-zh="✕ 不经过第三方" data-i18n-en="✕ No third party"</b>data-i18n-key="There is no backend — the developer receives nothing; the cache stores hashes, never raw text.|p.nothird.d" data-i18n-zh="There is no backend — the developer receives nothing; the cache stores hashes, never raw text." data-i18n-en="p.nothird."</div>
+    <div><b>data-i18n-key="p.restore.t" data-i18n-zh="✓ 一切可恢复" data-i18n-en="✓ Everything restorable"</b>data-i18n-key="Every hidden item can be viewed with a click; the key and all local data can be deleted anytime.|p.restore.d" data-i18n-zh="Every hidden item can be viewed with a click; the key and all local data can be deleted anytime." data-i18n-en="p.restore."</div>
+  </div>
+
+  <footer>
+    <div>More Signal, Less Noise, Better Living.<br>Jev X Blocker · 基于 <a href="https://github.com/bugkiwi/elons-job">elons-job</a>（MIT）重构 · 本页由 GitHub Pages 提供</div>
+    <div><a href="https://github.com/bit-cook/Jev-X-Blocker">GitHub</a> · <a href="https://github.com/bit-cook/Jev-X-Blocker/releases">Releases</a> · <a href="https://github.com/bit-cook/Jev-X-Blocker/blob/main/privacy.html">隐私政策</a> · data-i18n-key="chip.mit" data-i18n-zh="MIT License" data-i18n-en="MIT License"</div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const btn=document.getElementById('themeToggle');
+  const root=document.documentElement;
+  btn.addEventListener('click',()=>{
+    const next=root.dataset.jxbTheme==='light'?'dark':'light';
+    root.dataset.jxbTheme=next;
+    btn.textContent=next==='light'?'切换深色':'切换浅色';
+  });
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const nodes = document.querySelectorAll('[data-i18n-key]');
+  let lang = 'zh';
+  const apply = () => {
+    nodes.forEach((el) => {
+      el.innerHTML = lang === 'en' ? el.dataset.i18nEn : el.dataset.i18nZh;
+    });
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    document.getElementById('langToggle').textContent = lang === 'en' ? '中文' : 'EN';
+  };
+  document.getElementById('langToggle').addEventListener('click', () => { lang = lang === 'en' ? 'zh' : 'en'; apply(); });
+  apply();
+})();
+</script>
+</body>
+</html>
