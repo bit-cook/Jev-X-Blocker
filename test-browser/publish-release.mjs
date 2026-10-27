@@ -1,5 +1,5 @@
 // Creates a GitHub release and uploads the built ZIP.
-//   GH_TOKEN=... node test-browser/publish-release.mjs [--tag=v1.0.0]
+//   GH_TOKEN=... node test-browser/publish-release.mjs [--tag=v1.1.0]
 import { readFileSync, statSync } from 'node:fs';
 import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
