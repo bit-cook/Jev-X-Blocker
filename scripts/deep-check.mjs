@@ -83,6 +83,23 @@ for (const asset of ['assets/icon128.png', 'shots/console.png', 'shots/settings.
 check('隐私政策无远端脚本', !/<(script|link)[^>]+https?:\/\//i.test(read('privacy.html')));
 check('gitignore 覆盖 .env/dist/release/docs/测试产物', ['.env', 'dist/', 'release/', 'docs/', 'test-browser/artifacts/', '.edge-profile'].every((p) => read('.gitignore').includes(p)));
 
+console.log('== D2. I18N 双语键一致 ==');
+try {
+  const i18nPath = resolve(ROOT, 'src/shared/i18n.js');
+  const tmp = { exports: null };
+  const moduleShim = { exports: {} };
+  const fn = new Function('module', 'globalThis', readFileSync(i18nPath, 'utf8'));
+  fn(moduleShim, { JevXBlocker: {} });
+  const dict = moduleShim.exports.MESSAGES;
+  const zhKeys = Object.keys(dict.zh).sort();
+  const enKeys = Object.keys(dict.en).sort();
+  check('I18N 双语键一致', JSON.stringify(zhKeys) === JSON.stringify(enKeys), 'diff: ' + zhKeys.filter(k => !enKeys.includes(k)).concat(enKeys.filter(k => !zhKeys.includes(k))).join(', ').slice(0, 200));
+  check('I18N 内置规则名齐全', ['sexual_content', 'sexual_solicitation', 'spam_behavior'].every((id) => zhKeys.includes(`rule.${id}.name`) && enKeys.includes(`rule.${id}.name`) && zhKeys.includes(`rule.${id}.desc`) && enKeys.includes(`rule.${id}.desc`)));
+  check('I18N 无空值', zhKeys.every(k => String(dict.zh[k]).trim()) && enKeys.every(k => String(dict.en[k]).trim()));
+} catch (e) {
+  check('I18N 字典可加载', false, e.message.slice(0, 120));
+}
+
 console.log('== E. 依赖健康 ==');
 check('无 node_modules 依赖（零依赖项目）', !existsSync(resolve(ROOT, 'node_modules')));
 check('package.json 无 dependencies', !pkg.dependencies || Object.keys(pkg.dependencies).length === 0);

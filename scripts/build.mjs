@@ -8,7 +8,7 @@ const destination = resolve(root, 'dist');
 
 await rm(destination, { recursive: true, force: true });
 await mkdir(destination, { recursive: true });
-for (const entry of ['manifest.json', 'src', 'assets']) {
+for (const entry of ['manifest.json', 'src', 'assets', '_locales']) {
   await cp(resolve(root, entry), resolve(destination, entry), { recursive: true });
 }
 

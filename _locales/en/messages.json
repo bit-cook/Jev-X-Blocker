@@ -1,0 +1,4 @@
+{
+  "extName": { "message": "Jev X Blocker", "description": "Extension name" },
+  "extDesc": { "message": "Local-first Chrome MV3 extension: hides garbage and noise on X (porn, solicitation, flooding) with high confidence using your own TypeSafe Jev API key. Posts + replies, one-click restore.", "description": "Extension description" }
+}

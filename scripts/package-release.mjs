@@ -21,6 +21,7 @@ const version = arg('version', manifest.version);
 const folder = arg('folder', 'Jev-X-Blocker');
 const outPath = resolve(ROOT, arg('out', `release/Jev-X-Blocker-v${version}.zip`));
 
+if (!existsSync(join(DIST, '_locales'))) { console.error('dist/_locales missing — run scripts/build.mjs first.'); process.exit(1); }
 if (!existsSync(DIST)) {
   console.error('dist/ not found. Run `node scripts/build.mjs` first.');
   process.exit(1);

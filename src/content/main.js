@@ -121,6 +121,15 @@
     scheduleScan();
   }
 
+  function applyUiLang(config) {
+    if (!root.JevI18n) return;
+    root.JevI18n.setOverride(config.uiLang);
+    const current = root.JevI18n.lang();
+    if (root.__jxbLastLang === current) return;
+    root.__jxbLastLang = current;
+    overlay.refreshTexts();
+  }
+
   async function syncConfig() {
     const response = await pipeline.send(core.MESSAGE.GET_STATE);
     if (!response || !response.config) return;
@@ -129,6 +138,7 @@
       || Boolean(response.hasApiKey) !== p.getHasApiKey();
     if (!changed) return;
     p.setRuntime(response.config, response.hasApiKey);
+    applyUiLang(response.config);
     p.state.processed.clear();
     if (!response.config.enabled || !response.hasApiKey) overlay.clearAppliedStates();
     for (const [, control] of overlay.controls()) {
@@ -163,6 +173,7 @@
       response && response.config ? response.config : core.createDefaultConfig(),
       Boolean(response && response.hasApiKey)
     );
+    applyUiLang(pipeline.getConfig());
     state.route = root.location.href;
     state.started = true;
     overlay.renderMonitor();

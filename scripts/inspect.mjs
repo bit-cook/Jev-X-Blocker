@@ -15,7 +15,16 @@ const check = (name, ok, detail = '') => {
 
 console.log('== 1. manifest 一致性 ==');
 const manifest = JSON.parse(readFileSync(resolve(ROOT, 'manifest.json'), 'utf8'));
-check('name 为 Jev X Blocker', manifest.name === 'Jev X Blocker', manifest.name);
+check('name 走 i18n 占位符', manifest.name === '__MSG_extName__', manifest.name);
+check('description 走 i18n 占位符', manifest.description === '__MSG_extDesc__', manifest.description);
+check('default_locale 为 zh_CN', manifest.default_locale === 'zh_CN', manifest.default_locale);
+const localesOk = ['en', 'zh_CN'].every((locale) => {
+  try {
+    const messages = JSON.parse(readFileSync(resolve(ROOT, '_locales', locale, 'messages.json'), 'utf8'));
+    return messages.extName && messages.extDesc && messages.extName.message.length > 0;
+  } catch (_) { return false; }
+});
+check('_locales/en 与 _locales/zh_CN 存在且含 extName/extDesc', localesOk);
 check('版本号格式 x.y.z', /^\d+\.\d+\.\d+$/.test(manifest.version), manifest.version);
 check('manifest_version 3', manifest.manifest_version === 3);
 check('权限仅 storage', JSON.stringify(manifest.permissions) === '["storage"]', JSON.stringify(manifest.permissions));

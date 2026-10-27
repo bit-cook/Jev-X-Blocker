@@ -23,6 +23,12 @@ for (const entry of manifest.web_accessible_resources) entry.matches = ['https:/
 if (process.env.WITH_HOST_PERMS === '1') {
   manifest.host_permissions = [...manifest.host_permissions, 'http://127.0.0.1:8789/*'];
 }
+for (const locale of ['en', 'zh_CN']) {
+  const messagesPath = resolve(dest, '_locales', locale, 'messages.json');
+  const messages = JSON.parse(await readFile(messagesPath, 'utf8'));
+  messages.extName.message = 'Jev X Blocker E2E';
+  await writeFile(messagesPath, `${JSON.stringify(messages, null, 2)}\n`);
+}
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
 console.log(`dist-test ready at ${dest} (host_permissions: ${JSON.stringify(manifest.host_permissions)})`);

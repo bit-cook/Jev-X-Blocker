@@ -8,6 +8,15 @@ const root = path.join(__dirname, '..');
 test('manifest stays within the permission boundary and references shipped entrypoints', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
   assert.equal(manifest.manifest_version, 3);
+  assert.equal(manifest.default_locale, 'zh_CN');
+  assert.equal(manifest.name, '__MSG_extName__');
+  assert.equal(manifest.description, '__MSG_extDesc__');
+  for (const locale of ['en', 'zh_CN']) {
+    const messages = JSON.parse(fs.readFileSync(path.join(root, '_locales', locale, 'messages.json'), 'utf8'));
+    assert.ok(messages.extName && messages.extName.message.length > 0, `extName missing in ${locale}`);
+    assert.ok(messages.extDesc && messages.extDesc.message.length > 0, `extDesc missing in ${locale}`);
+  }
+  assert.equal(manifest.content_scripts[0].js[1], 'src/shared/i18n.js');
   assert.deepEqual(manifest.permissions, ['storage']);
   assert.ok(manifest.host_permissions.includes('https://x.com/*'));
   assert.ok(manifest.host_permissions.includes('https://api.typesafe.ai/*'));
@@ -19,6 +28,7 @@ test('manifest stays within the permission boundary and references shipped entry
   // Content scripts load in dependency order: core -> adapter -> pipeline -> overlay -> main.
   assert.deepEqual(manifest.content_scripts[0].js, [
     'src/shared/core.js',
+    'src/shared/i18n.js',
     'src/content/adapter.js',
     'src/content/pipeline.js',
     'src/content/overlay.js',

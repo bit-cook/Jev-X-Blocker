@@ -1,4 +1,5 @@
 importScripts('shared/core.js');
+importScripts('shared/i18n.js');
 
 (function () {
   'use strict';
@@ -312,6 +313,7 @@ importScripts('shared/core.js');
 
   async function classify(payload) {
     const config = await E.loadConfig(runtime, true);
+    if (globalThis.JevI18n) globalThis.JevI18n.setOverride(config.uiLang);
     const kind = payload && payload.kind === 'post' ? 'post' : 'comment';
     const rules = E.activeRules(config, kind);
     const text = E.normalizeText(payload && payload.text);

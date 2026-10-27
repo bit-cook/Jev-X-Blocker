@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   const E = globalThis.JevXBlocker;
+  const I = globalThis.JevI18n;
   const $ = (id) => document.getElementById(id);
   let currentState;
 
@@ -15,6 +16,17 @@
       ? theme
       : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.dataset.jxbTheme = resolved;
+  }
+
+  function ruleDisplayName(rule) {
+    if (!rule.builtin) return rule.name;
+    const key = `rule.${rule.id}.name`;
+    return I.has(key) ? I.t(key) : rule.name;
+  }
+
+  function ruleMetaSuffix(rule) {
+    if (rule.applyTo.length === 2) return '';
+    return I.t(rule.applyTo[0] === 'post' ? 'rule.postsOnly' : 'rule.commentsOnly');
   }
 
   function renderVersion() {
@@ -34,7 +46,7 @@
   document.querySelectorAll('#themeSeg button').forEach((btn) => btn.addEventListener('click', async () => {
     applyTheme(btn.dataset.themeValue);
     const response = await send(E.MESSAGE.SAVE_CONFIG, { theme: btn.dataset.themeValue });
-    if (response.ok) { await refresh(); toast(btn.dataset.themeValue === 'system' ? '已跟随系统主题' : btn.dataset.themeValue === 'dark' ? '已切换到深色' : '已切换到浅色', 'success'); }
+    if (response.ok) { await refresh(); I.applyDocument(); toast(I.t(btn.dataset.themeValue === 'system' ? 'settings.toastThemeSystem' : btn.dataset.themeValue === 'dark' ? 'settings.toastThemeDark' : 'settings.toastThemeLight'), 'success'); }
   }));
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (currentState && currentState.config.theme === 'system') applyTheme('system');
@@ -51,18 +63,18 @@
     setTimeout(() => node.classList.add('jxb-hidden'), 2600);
   }
 
-  const SCOPE_LABELS = [
-    ['detailReplies', '评论'],
-    ['detailRoot', '主帖'],
-    ['timeline', '时间线'],
-    ['search', '搜索'],
-    ['profile', '主页'],
-    ['explore', '探索']
+  const SCOPE_KEYS = [
+    ['detailReplies', 'scope.detailReplies'],
+    ['detailRoot', 'scope.detailRoot'],
+    ['timeline', 'scope.timeline'],
+    ['search', 'scope.search'],
+    ['profile', 'scope.profile'],
+    ['explore', 'scope.explore']
   ];
 
   function scopeSummary(config) {
-    const labels = SCOPE_LABELS.filter(([key]) => config.scopes[key]).map(([, label]) => label);
-    return labels.length ? `过滤范围：${labels.join(' · ')}` : '所有过滤范围已关闭';
+    const labels = SCOPE_KEYS.filter(([key]) => config.scopes[key]).map(([, key]) => I.t(key));
+    return labels.length ? labels.join(I.t('scope.summaryJoin')) : I.t('scope.summaryAllOff');
   }
 
   function renderRules(config) {
@@ -73,11 +85,12 @@
       row.className = 'jxb-rule-row';
       const icon = document.createElement('span'); icon.className = 'jxb-rule-icon'; icon.textContent = rule.builtin ? '◈' : '＋';
       const copy = document.createElement('span'); copy.className = 'jxb-rule-copy';
-      const name = document.createElement('strong'); name.className = 'jxb-rule-name'; name.textContent = rule.name;
-      const applies = rule.applyTo.length === 2 ? '' : rule.applyTo[0] === 'post' ? ' · 仅帖子' : ' · 仅评论';
-      const meta = document.createElement('span'); meta.className = 'jxb-rule-meta'; meta.textContent = rule.enabled ? rule.description + applies : '规则已停用';
-      copy.append(name, meta);
-      const chip = document.createElement('span'); chip.className = `jxb-chip ${rule.enabled ? 'green' : ''}`; chip.textContent = rule.enabled ? `${Math.round(rule.threshold * 100)}%` : 'OFF';
+      const name = document.createElement('strong'); name.className = 'jxb-rule-name'; name.textContent = ruleDisplayName(rule);
+      const desc = document.createElement('span'); desc.className = 'jxb-rule-meta';
+      const descText = !rule.builtin || !I.has(`rule.${rule.id}.desc`) ? rule.description : I.t(`rule.${rule.id}.desc`);
+      desc.textContent = rule.enabled ? descText + ruleMetaSuffix(rule) : I.t('popup.ruleDisabled');
+      copy.append(name, desc);
+      const chip = document.createElement('span'); chip.className = `jxb-chip ${rule.enabled ? 'green' : ''}`; chip.textContent = rule.enabled ? `${Math.round(rule.threshold * 100)}%` : I.t('common.off');
       row.append(icon, copy, chip);
       row.style.opacity = rule.enabled ? '1' : '.55';
       return row;
@@ -88,20 +101,30 @@
     currentState = state;
     const config = state.config;
     const stats = state.stats;
+    I.setOverride(config.uiLang);
+    I.applyDocument();
+    if (document.body.classList.contains('jxb-standalone')) document.title = 'Jev X Blocker · ' + I.t('common.console');
     applyTheme(config.theme);
     const headerStatus = $('headerStatus');
-    if (headerStatus) headerStatus.innerHTML = state.hasApiKey ? '<span class="jxb-dot"></span> 防护已就绪' : '<span class="jxb-dot warn"></span> 需要 API Key';
+    if (headerStatus) headerStatus.innerHTML = state.hasApiKey
+      ? `<span class="jxb-dot"></span>${I.t('common.ready')}`
+      : `<span class="jxb-dot warn"></span>${I.t('common.keyRequired')}`;
     $('enabledToggle').checked = config.enabled;
     $('shield').classList.toggle('off', !config.enabled || !state.hasApiKey);
-    $('statusTitle').textContent = config.enabled ? '保护状态' : '保护已暂停';
-    $('statusBadge').textContent = !state.hasApiKey ? 'KEY REQUIRED' : config.enabled ? 'SHIELD ON' : 'PAUSED';
+    $('statusTitle').textContent = I.t('popup.statusTitle');
+    $('statusBadge').textContent = !state.hasApiKey ? I.t('popup.shieldKeyRequired') : config.enabled ? I.t('popup.shieldOn') : I.t('popup.shieldPaused');
     $('statusBadge').className = `jxb-chip ${state.hasApiKey && config.enabled ? 'green' : 'amber'}`;
     $('checkedCount').textContent = String((stats.totalChecked || 0) + (stats.totalPostsChecked || 0));
     $('hiddenCount').textContent = String((stats.totalHidden || 0) + (stats.totalPostsHidden || 0));
-    $('hiddenBreakdown').textContent = `评论 ${stats.totalHidden || 0} · 帖子 ${stats.totalPostsHidden || 0}`;
+    $('hiddenBreakdown').textContent = I.t('popup.breakdown', { replies: stats.totalHidden || 0, posts: stats.totalPostsHidden || 0 });
     $('requestCount').textContent = String(stats.requests || 0);
     $('scopeSummary').textContent = scopeSummary(config);
-    const apiStatus = $('apiStatus'); apiStatus.replaceChildren(); const dot = document.createElement('span'); dot.className = `jxb-dot ${state.hasApiKey ? '' : 'warn'}`; apiStatus.append(dot, document.createTextNode(state.hasApiKey ? ` TypeSafe 已连接${stats.latencyMs ? ` · ${stats.latencyMs}ms` : ''}` : ' 未连接 TypeSafe'));
+    const apiStatus = $('apiStatus');
+    apiStatus.replaceChildren();
+    const dot = document.createElement('span'); dot.className = `jxb-dot ${state.hasApiKey ? '' : 'warn'}`;
+    apiStatus.append(dot, document.createTextNode(state.hasApiKey
+      ? (stats.latencyMs ? I.t('common.connectedWithLatency', { ms: stats.latencyMs }) : I.t('common.connected'))
+      : I.t('common.disconnected')));
     $('connectPanel').classList.toggle('jxb-hidden', state.hasApiKey);
     renderRules(config);
     renderVersion();
@@ -115,7 +138,7 @@
 
   $('enabledToggle').addEventListener('change', async (event) => {
     const response = await send(E.MESSAGE.SAVE_CONFIG, { enabled: event.target.checked });
-    if (response.ok) { await refresh(); toast(event.target.checked ? '保护已开启' : '保护已暂停', 'success'); }
+    if (response.ok) { await refresh(); toast(I.t(event.target.checked ? 'popup.toastOn' : 'popup.toastOff'), 'success'); }
   });
 
   $('settingsButton').addEventListener('click', () => send(E.MESSAGE.OPEN_SETTINGS));
@@ -125,22 +148,22 @@
     const apiKey = $('apiKeyInput').value.trim();
     const message = $('connectMessage');
     message.classList.add('jxb-hidden');
-    if (!apiKey) { message.textContent = '请输入 API Key。'; message.classList.remove('jxb-hidden'); return; }
+    if (!apiKey) { message.textContent = I.t('popup.errNoKey'); message.classList.remove('jxb-hidden'); return; }
     $('saveKeyButton').disabled = true;
-    $('saveKeyButton').textContent = '测试中…';
+    $('saveKeyButton').textContent = I.t('popup.testing');
     const test = await send(E.MESSAGE.TEST_CONNECTION, { apiKey });
     if (!test.ok) {
-      message.textContent = `连接失败：${test.error || 'API_UNAVAILABLE'}。插件会保持放行。`;
+      message.textContent = I.t('popup.errConnect', { e: test.error || 'API_UNAVAILABLE' });
       message.classList.remove('jxb-hidden');
     } else {
       await send(E.MESSAGE.SAVE_API_KEY, { apiKey });
       await send(E.MESSAGE.SAVE_CONFIG, { onboardingCompleted: true });
       $('apiKeyInput').value = '';
-      toast(`连接成功 · ${test.latencyMs}ms`, 'success');
+      toast(I.t('popup.toastConnected', { ms: test.latencyMs }), 'success');
       await refresh();
     }
     $('saveKeyButton').disabled = false;
-    $('saveKeyButton').textContent = '连接';
+    $('saveKeyButton').textContent = I.t('popup.connect');
   });
 
   refresh();

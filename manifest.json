@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Jev X Blocker",
+  "name": "__MSG_extName__",
   "version": "1.0.3",
-  "description": "用你自己的 TypeSafe Jev API Key，高置信度隐藏 X 上的垃圾信息与噪声骚扰（色情、引流、刷屏等），一键可恢复。本地优先，帖子 + 评论双通道。",
+  "description": "__MSG_extDesc__",
   "icons": {
     "16": "assets/icon16.png",
     "32": "assets/icon32.png",
@@ -36,6 +36,7 @@
       ],
       "js": [
         "src/shared/core.js",
+        "src/shared/i18n.js",
         "src/content/adapter.js",
         "src/content/pipeline.js",
         "src/content/overlay.js",
@@ -56,5 +57,6 @@
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
-  }
+  },
+  "default_locale": "zh_CN"
 }

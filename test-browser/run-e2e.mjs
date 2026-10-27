@@ -116,7 +116,18 @@ async function main() {
   }, { timeout: 12000, interval: 500, describe: 'onboarding page' }).then(() => true, () => false);
   check('install opened the onboarding page', onboardingSeen);
 
-  const workers = (await jsonList()).filter((t) => t.type === 'service_worker');
+  // MV3 service workers idle-stop; opening an extension page wakes it.
+  let workers = (await jsonList()).filter((t) => t.type === 'service_worker');
+  if (!workers.length) {
+    const anyExt = (await jsonList()).find((t) => /chrome-extension:\/\//.test(t.url));
+    if (anyExt) {
+      const extId = anyExt.url.match(/chrome-extension:\/\/([^/]+)/)[1];
+      const wake = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?${encodeURIComponent(`chrome-extension://${extId}/src/popup.html`)}`, { method: 'PUT' }).then((r) => r.json()).catch(() => null);
+      await sleep(2200);
+      workers = (await jsonList()).filter((t) => t.type === 'service_worker');
+      if (wake) await fetch(DEBUG_PORT + '/json/close/' + wake.id).catch(() => {});
+    }
+  }
   const swTarget = workers.find((t) => /\/src\/background\.js/.test(t.url)) || workers.find((t) => /chrome-extension:/.test(t.url));
   check('service worker registered', Boolean(swTarget), swTarget ? swTarget.url : 'none');
 

@@ -30,6 +30,9 @@
   const CONFIG_VERSION = 4;
   const COMBINED_RISK_RULE_IDS = ['sexual_content', 'sexual_solicitation', 'spam_behavior'];
   const COMBINED_RISK_THRESHOLD = 1.05;
+  // Display labels resolved at decision time; i18n.js keeps these in sync
+  // with the configured interface language.
+  const DECISION_LABELS = { combined_risk: '综合风险' };
   const COMBINED_RISK_MIN_COMPONENT = 0.4;
   const API_ENDPOINT = 'https://api.typesafe.ai/v1/systemone';
   const MAX_CONTENT_LENGTH = 4000;
@@ -104,6 +107,7 @@
     onboardingCompleted: false,
     rulesVersion: CONFIG_VERSION,
     theme: 'system',
+    uiLang: 'system',
     failOpen: true,
     preload: false,
     lazyScan: true,
@@ -203,6 +207,7 @@
       onboardingCompleted: raw.onboardingCompleted === true,
       rulesVersion: CONFIG_VERSION,
       theme: ['system', 'dark', 'light'].includes(raw.theme) ? raw.theme : 'system',
+      uiLang: ['system', 'zh', 'en'].includes(raw.uiLang) ? raw.uiLang : 'system',
       failOpen: raw.failOpen !== false,
       preload: raw.preload === true,
       lazyScan: raw.lazyScan !== false,
@@ -459,7 +464,7 @@
     if (localSignals.combinedRisk.matched) {
       matches.push({
         ruleId: 'combined_risk',
-        name: '综合风险',
+        name: DECISION_LABELS.combined_risk,
         probability: 1,
         threshold: 1,
         combinedScore: localSignals.combinedRisk.score,
@@ -849,7 +854,8 @@
     getStats,
     updateStats,
     cleanError,
-    debugLog
+    debugLog,
+    DECISION_LABELS,
   };
 
   root[APP] = Object.assign(root[APP] || {}, exported);
