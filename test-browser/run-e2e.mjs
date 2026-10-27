@@ -95,6 +95,15 @@ const PAGE_STATE = `JSON.stringify((() => {
 })())`;
 
 async function main() {
+  // Preflight: the mock server must be alive, or every later step fails in
+  // confusing ways (the browser tab would just be a cached dead page).
+  try {
+    await fetch(MOCK + '/home', { signal: AbortSignal.timeout(5000) });
+    console.log('mock server alive');
+  } catch (_) {
+    console.error('mock server DOWN — start it first: node test-browser/mock-server.mjs');
+    process.exit(2);
+  }
   console.log('waiting for Edge DevTools endpoint...');
   const initial = await waitFor(async () => {
     try { return await jsonList(); } catch (_) { return null; }

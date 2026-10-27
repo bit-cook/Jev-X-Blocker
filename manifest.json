@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Jev X Blocker",
   "version": "1.0.3",
-  "description": "屏蔽 X 上的色情、性暗示与引流帖子和评论：高置信度才隐藏，可一键恢复。",
+  "description": "用你自己的 TypeSafe Jev API Key，高置信度隐藏 X 上的垃圾信息与噪声骚扰（色情、引流、刷屏等），一键可恢复。本地优先，帖子 + 评论双通道。",
   "icons": {
     "16": "assets/icon16.png",
     "32": "assets/icon32.png",
