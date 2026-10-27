@@ -104,11 +104,15 @@
     const previous = state.statuses.get(key);
     const oldStatus = statusOf(previous);
     const newStatus = next ? (next.pending ? 'pending' : next.ok ? (next.shouldHide ? 'hidden' : 'safe') : 'error') : null;
+    // Count against the kind the entry was FIRST registered with, so a
+    // re-entrant call (same tweet seen as post on one route and comment on
+    // another) cannot double-count or strand a post/comment delta.
+    const trackedKind = previous ? previous.kind : kind;
     if (!oldStatus && newStatus) {
       state.pageChecked += 1;
-      if (kind === 'post') state.pagePostChecked += 1;
+      if (trackedKind === 'post') state.pagePostChecked += 1;
       if (!state.deltas) state.deltas = { checked: 0, hidden: 0, postsChecked: 0, postsHidden: 0 };
-      if (kind === 'post') state.deltas.postsChecked += 1;
+      if (trackedKind === 'post') state.deltas.postsChecked += 1;
       else state.deltas.checked += 1;
     }
     if (oldStatus && !newStatus) {
@@ -162,6 +166,10 @@
     state.reportTimer = setTimeout(flushReport, 1200);
   }
 
+  // Called when a classify response turns a previously-unreported item into
+  // "hidden". The matching checked delta may already have been flushed (the
+  // pending transition happened earlier), so record both here to keep the
+  // cumulative totals consistent with what the page counters show.
   function markHiddenDelta(kind) {
     if (!state.deltas) state.deltas = { checked: 0, hidden: 0, postsChecked: 0, postsHidden: 0 };
     if (kind === 'post') state.deltas.postsHidden += 1;

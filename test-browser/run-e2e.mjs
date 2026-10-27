@@ -187,6 +187,9 @@ async function main() {
   await evaluate(page, `[...document.querySelectorAll('.jxb-check-host button.jxb-check-recheck')].forEach((b) => b.click())`);
   await waitFor(async () => (await evaluate(page, `document.querySelectorAll('[data-jxb-placeholder]').length`)) === 2, { timeout: 15000, describe: 'recovery re-hide' });
   check('recovery: live endpoint re-hides content', true);
+  await sleep(2500);
+  const stats = JSON.parse(await evaluate(sw, `new Promise(res => chrome.storage.local.get('jevXBlockerStats', r => res(JSON.stringify(r.jevXBlockerStats || {}))))`));
+  check('stats after recovery: hidden totals reconcile with page counters', Number(stats.totalHidden) >= 1 && Number(stats.totalPostsHidden) >= 1, `totalHidden=${stats.totalHidden} totalPostsHidden=${stats.totalPostsHidden}`);
 
   // 7. Screenshot of the final state for the user.
   await front();
