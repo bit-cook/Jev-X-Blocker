@@ -142,29 +142,26 @@ const barSDF = (x, y) => sdRoundRect(x - BAR.cx, y - BAR.cy, BAR.hx, BAR.hy, BAR
 // ---------------------------------------------------------------------------
 
 function sample(x, y) {
-  // --- badge canvas ---
-  const bg = sdRoundRect(x, y, 0.478, 0.478, 0.118);
-  if (bg > 0) return [0, 0, 0, 0];
-
-  // Background: deep navy vertical gradient + vignette.
-  const ty = clamp01(y + 0.5);
-  let col = mix3([22, 33, 60], [6, 10, 21], ty, 0);
-  const vig = smoothstep(0.22, 0.52, Math.hypot(x, y));
-  col = [col[0] * (1 - 0.22 * vig), col[1] * (1 - 0.22 * vig), col[2] * (1 - 0.20 * vig)];
-
-  // Soft blue core glow behind the shield (slightly above center).
-  const gx = x - 0.02, gy = y + 0.06;
-  const glow = Math.exp(-(gx * gx + gy * gy) / 0.052) * 0.42;
-  col = [col[0] + glow * 30, col[1] + glow * 105, col[2] + glow * 225];
-
-  // Shield drop shadow (soft, below-right), clipped to the canvas.
-  const shSDF = shieldSDF(x - 0.016, y - 0.028);
-  const shA = (1 - smoothstep(-0.030, 0.035, shSDF)) * 0.55;
-  if (shA > 0) col = [mix(col[0], 4, shA), mix(col[1], 7, shA), mix(col[2], 16, shA)];
-
+  // Shield silhouette (the icon itself — everything else is transparent).
   const sd = shieldSDF(x, y);
+
+  // Soft brand-blue halo just outside the shield (semi-transparent).
+  const gd = Math.hypot(x - 0.02, y + 0.06);
+  const glowA = Math.exp(-(gd * gd) / 0.055) * 0.42;
+
+  // Composite: transparent base <- halo <- shield <- bar.
+  let col = [0, 0, 0];
+  let a = 0;
+
+  // Halo layer.
+  if (glowA > 0.004) {
+    col = [96 * glowA / Math.max(glowA, 1), 190 * glowA, 255 * glowA];
+    col = [mix(col[0], 150, glowA), mix(col[1], 205, glowA), mix(col[2], 255, glowA)];
+    a = a + glowA * (1 - a);
+  }
+
   if (sd <= 0.001) {
-    // --- shield body: diagonal sky -> blue -> deep violet gradient ---
+    // --- shield body: vertical aurora gradient (cyan -> blue -> violet) ---
     const gt = clamp01((y + 0.43) / 0.84);
     let sc = mix3([80, 222, 252], [64, 132, 250], [104, 62, 228], gt);
     // vertical volume: light from above, darker toward the bottom point
@@ -174,6 +171,7 @@ function sample(x, y) {
     const rim = smoothstep(-0.26, -0.388, y) * 0.30;
     sc = [sc[0] + rim * 46, sc[1] + rim * 60, sc[2] + rim * 80];
     col = sc;
+    a = 1;
 
     // glass inner highlight: thin bright line just inside the edge, fading down
     const ringA = (1 - smoothstep(0.008, 0.014, Math.abs(sd + 0.048))) * (0.20 + 0.30 * smoothstep(0.15, -0.30, y));
@@ -187,31 +185,23 @@ function sample(x, y) {
     const sx = (x + 0.115) / 0.115, sy = (y + 0.170) / 0.070;
     const spec = Math.exp(-(sx * sx + sy * sy)) * 0.16;
     col = [col[0] + spec * 130, col[1] + spec * 150, col[2] + spec * 170];
+  } else if (sd < 0.017) {
+    // thin light rim just outside the shield: keeps the mark readable on
+    // dark backgrounds now that the badge canvas is gone
+    const rimA = (1 - smoothstep(0.006, 0.016, sd)) * 0.9;
+    col = [mix(col[0], 240, rimA), mix(col[1], 248, rimA), mix(col[2], 255, rimA)];
+    a = Math.max(a, rimA);
   }
-
-  // --- bar drop shadow (on the shield only) ---
-  const bsSDF = barSDF(x - 0.002, y - 0.024);
-  const bsA = (1 - smoothstep(-0.006, 0.030, bsSDF)) * 0.38 * (1 - smoothstep(0.001, 0.02, sd)) * smoothstep(-0.012, 0.014, y - (BAR.cy + BAR.hy));
-  if (bsA > 0) col = [mix(col[0], 7, bsA), mix(col[1], 12, bsA), mix(col[2], 30, bsA)];
 
   // --- white redaction bar with a subtle vertical sheen ---
   const bd = barSDF(x, y);
   if (bd <= 0) {
     const bt = clamp01((y - (BAR.cy - BAR.hy)) / (BAR.hy * 2));
     col = mix3([255, 255, 255], [236, 244, 255], [206, 224, 250], bt);
+    a = 1;
   }
 
-  // badge edge: hairline highlight on top, deeper shading at the bottom rim
-  if (bg > -0.018 && y < 0) {
-    const lift = (1 - clamp01((bg + 0.018) / 0.018)) * 22;
-    col = [col[0] + lift, col[1] + lift, col[2] + lift * 1.1];
-  }
-  if (bg > -0.03 && y > 0.30) {
-    const dk = (1 - clamp01((bg + 0.03) / 0.03)) * 16;
-    col = [col[0] - dk, col[1] - dk, col[2] - dk * 0.8];
-  }
-
-  return [clamp(col[0], 0, 255), clamp(col[1], 0, 255), clamp(col[2], 0, 255), 255];
+  return [clamp(col[0], 0, 255), clamp(col[1], 0, 255), clamp(col[2], 0, 255), Math.round(clamp(a, 0, 1) * 255)];
 }
 
 function render(size) {

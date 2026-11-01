@@ -8,6 +8,10 @@
 // article[data-testid="tweet"], [data-testid="tweetText"],
 // [data-testid="User-Name"], a[href*="/status/"].
 import { createServer } from 'node:http';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // MOCK_CORS=off disables Access-Control-* headers entirely, to test whether
 // an MV3 service worker with host_permissions still needs CORS.
@@ -17,6 +21,7 @@ const PORT = Number(process.env.MOCK_PORT || 8788);
 const HIDE_KEYWORDS = ['骚', '福利', '私密', '只进身体', '进群', '想约', '私聊', '加我', '完整版', 'DM for'];
 
 const PAGE = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Mock X</title>
+<link rel="icon" type="image/png" href="/icon128.png">
 <style>body{font-family:system-ui,"Segoe UI","Microsoft YaHei",sans-serif;margin:0;padding:16px;background:#000;color:#e7e9ea}
 article{border:1px solid #2f3336;border-radius:12px;padding:12px;margin:8px 0}
 a{color:#1d9bf0;text-decoration:none}.name{font-weight:700;margin-top:6px}.text{margin-top:4px}</style></head>
@@ -76,6 +81,14 @@ const server = createServer((req, res) => {
       res.end(JSON.stringify({ model: 'jev-mock', answers, usage: { input_tokens: 1, output_tokens: 1 } }));
     });
     return;
+  }
+  if (req.url === '/icon128.png') {
+    try {
+      const icon = readFileSync(resolve(ROOT, 'assets/icon128.png'));
+      res.writeHead(200, { 'Content-Type': 'image/png' });
+      res.end(icon);
+      return;
+    } catch (_) {}
   }
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end(PAGE);
